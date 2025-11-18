@@ -47,6 +47,9 @@ private:
  *
  */
 class ICacheManager {
+
+
+
 public:
     /**
      * @brief Default destructor
