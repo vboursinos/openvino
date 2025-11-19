@@ -48,7 +48,7 @@ private:
  */
 class ICacheManager {
 
-
+/** Vasilis */
 
 public:
     /**
