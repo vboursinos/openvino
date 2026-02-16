@@ -151,9 +151,6 @@ bool ov::pass::ConstantFolding::run_on_model(const std::shared_ptr<ov::Model>& m
                     replacement_ptr->set_friendly_name(friendly_name_from(*original_node, replacements.size(), i));
 
                     node_output.replace(replacement);
-                    // Copy runtime info from source nodes
-                    // when it was not propogated during pre-calculation
-                    copy_runtime_info_from_input_values(original_node);
                     // Propagate runtime info attributes to replacement
                     copy_runtime_info(original_node, replacement_ptr);
                     ov::copy_weightless_cache_attr(original_node, replacement_ptr);
