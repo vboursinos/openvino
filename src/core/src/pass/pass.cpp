@@ -32,14 +32,17 @@ void ov::pass::PassBase::set_property(const PassPropertyMask& prop, bool value) 
 
 std::string ov::pass::PassBase::get_name() const {
     if (m_name.empty()) {
-        const PassBase* p = this;
-        std::string pass_name = typeid(*p).name();
+        std::string pass_name = typeid(*this).name();
 #ifndef _WIN32
         int status;
         std::unique_ptr<char, void (*)(void*)> demangled_name(
             abi::__cxa_demangle(pass_name.c_str(), nullptr, nullptr, &status),
             std::free);
-        pass_name = demangled_name.get();
+        // Only use the demangled name if the demangling operation was successful (status == 0)
+        // and memory was successfully allocated.
+        if (demangled_name && status == 0) {
+            pass_name = demangled_name.get();
+        }
 #endif
         return pass_name;
     } else {
