@@ -55,13 +55,17 @@ static bool restore_original_input_precision(const std::shared_ptr<ov::Node>& no
     bool restored = false;
     if (ov::is_type<ov::op::v0::Convert>(node) && !is_decompression(node) && !is_dequantization_node(node)) {
         auto input = node->input(0);
-        ov::util::remove_original_input_precision_attribute(input);
-        return restored;
+        if (ov::util::has_original_input_precision(input)) {
+            ov::util::remove_original_input_precision_attribute(input);
+            return true;
+        }
+        return false;
     }
     for (size_t i = 0; i < node->get_input_size(); i++) {
         auto input = node->input(i);
         if (!ov::util::has_original_input_precision(input))
             continue;
+        restored = true;
         const auto original_type = ov::util::get_original_input_precision(input);
         ov::util::remove_original_input_precision_attribute(input);
         if (original_type != node->get_input_element_type(i)) {
@@ -70,7 +74,6 @@ static bool restore_original_input_precision(const std::shared_ptr<ov::Node>& no
             OPENVINO_ASSERT(convert->constant_fold(replacements, convert->input_values()));
             replacements[0].get_node()->set_friendly_name(node->get_input_node_ptr(i)->get_friendly_name());
             input.replace_source_output(replacements[0]);
-            restored = true;
         }
     }
     return restored;
