@@ -132,20 +132,20 @@ bool ov::pass::StatefulToStateless::run_on_model(const std::shared_ptr<ov::Model
     new_parameters.reserve(variables.size());
     new_results.reserve(variables.size());
 
-    for (const auto& variable_id : variables) {
-        auto future_param = future_params[variable_id.variable_name];
+    for (const auto& var_info : variables) {
+        auto future_param = future_params[var_info.variable_name];
         auto parameter = std::make_shared<v0::Parameter>(future_param->get_output_element_type(0),
                                                          future_param->get_output_partial_shape(0));
-        ov::op::util::set_name(*parameter, variable_id.input_name);
+        ov::op::util::set_name(*parameter, var_info.input_name);
 
         replace_node(future_param, parameter);
 
-        auto assign = assigns_by_var_id[variable_id.variable_name];
+        auto assign = assigns_by_var_id[var_info.variable_name];
         auto result = std::make_shared<v0::Result>(assign->input_value(0));
-        ov::op::util::set_name(*result, variable_id.output_name);
+        ov::op::util::set_name(*result, var_info.output_name);
 
         model->remove_sink(assign);  // Don't do replace_node(assign, result)! It will lead to silently incorrect model.
-        model->remove_variable(model->get_variable_by_id(variable_id.variable_name));
+        model->remove_variable(model->get_variable_by_id(var_info.variable_name));
         new_parameters.push_back(std::move(parameter));
         new_results.push_back(std::move(result));
     }
