@@ -71,9 +71,9 @@ ov::Dimension ov::op::util::DetectionOutputBase::compute_num_classes(const Attri
                           get_input_size());
 
     std::vector<ov::PartialShape> input_shapes;
-    for (size_t input_idx = 0; input_idx < get_input_size(); input_idx++)
+    for (size_t input_idx = 0; input_idx < get_input_size(); input_idx++) {
         input_shapes.push_back(get_input_partial_shape(input_idx));
-    std::vector<ov::PartialShape> output_shapes = {ov::PartialShape{}};
+    }
 
     int64_t num_classes = 0;
     int64_t num_prior_boxes_calculated = 0;
