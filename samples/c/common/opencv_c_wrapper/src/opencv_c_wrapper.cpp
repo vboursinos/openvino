@@ -31,7 +31,10 @@ int image_save(const char* img_path, c_mat_t* img) {
     return -1;
 }
 int image_free(c_mat_t* img) {
-    delete img->mat_data;
+    if (img && img->mat_data) { // Check if img and mat_data are not null before freeing
+        free(img->mat_data);
+        img->mat_data = NULL; // Set to NULL after freeing to prevent double free
+    }
     return 0;
 }
 int image_add_rectangles(c_mat_t* img, rectangle_t rects[], int classes[], int num, int thickness) {
