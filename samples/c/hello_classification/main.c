@@ -81,16 +81,7 @@ int main(int argc, char** argv) {
     print_model_input_output_info(model);
 
     CHECK_STATUS(ov_model_const_output(model, &output_port));
-    if (!output_port) {
-        fprintf(stderr, "[ERROR] Sample supports models with 1 output only %d\n", __LINE__);
-        goto err;
-    }
-
     CHECK_STATUS(ov_model_const_input(model, &input_port));
-    if (!input_port) {
-        fprintf(stderr, "[ERROR] Sample supports models with 1 input only %d\n", __LINE__);
-        goto err;
-    }
 
     // -------- Step 3. Set up input
 
